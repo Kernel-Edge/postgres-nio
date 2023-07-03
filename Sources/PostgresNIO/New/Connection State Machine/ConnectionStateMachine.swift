@@ -231,9 +231,9 @@ struct ConnectionStateMachine {
     mutating func sslSupportedReceived(unprocessedBytes: Int) -> ConnectionAction {
         switch self.state {
         case .sslRequestSent:
-            if unprocessedBytes > 0 {
-                return self.closeConnectionAndCleanup(.receivedUnencryptedDataAfterSSLRequest)
-            }
+//            if unprocessedBytes > 0 {
+//                return self.closeConnectionAndCleanup(.receivedUnencryptedDataAfterSSLRequest)
+//            }
             self.state = .sslNegotiated
             return .establishSSLConnection
             
@@ -540,7 +540,7 @@ struct ConnectionStateMachine {
         }
     }
     
-    mutating func notificationReceived(_ notification: PostgresBackendMessage.NotificationResponse) -> ConnectionAction {
+    func notificationReceived(_ notification: PostgresBackendMessage.NotificationResponse) -> ConnectionAction {
         return .forwardNotificationToListeners(notification)
     }
     
@@ -1062,10 +1062,10 @@ extension ConnectionStateMachine {
     /// not ideal.
     @inline(__always)
     private mutating func avoidingStateMachineCoW<ReturnType>(_ body: (inout ConnectionStateMachine) -> ReturnType) -> ReturnType {
-        self.state = .modifying
-        defer {
-            assert(!self.isModifying)
-        }
+//        self.state = .modifying
+//        defer {
+//            assert(!self.isModifying)
+//        }
 
         return body(&self)
     }
